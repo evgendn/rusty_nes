@@ -1,0 +1,6 @@
+[package]
+name = "rusty_nes"
+version = "0.1.0"
+authors = ["evgeniy <evgeniydein@gmail.com>"]
+
+[dependencies]
