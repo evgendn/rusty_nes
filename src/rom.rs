@@ -1,3 +1,5 @@
+use utils;
+
 use std::io;
 use std::convert::From;
 use std::error;
@@ -48,6 +50,11 @@ enum ROMType {
     FDS,
 }
 
+pub enum MirroringType {
+    Horizontal,
+    Vertical,
+}
+
 // iNES header 
 #[derive(Debug,Default)]
 pub struct Header {
@@ -62,8 +69,8 @@ pub struct Header {
     
     // 76543210
     // ||||||||
-    // |||||||+- Mirroring: 0: horizontal (vertical arrangement) (CIRAM A10 = PPU A11)
-    // |||||||              1: vertical (horizontal arrangement) (CIRAM A10 = PPU A10)
+    // |||||||+- Mirroring: 0: Horizontal (vertical arrangement) (CIRAM A10 = PPU A11)
+    // |||||||              1: vertical (Horizontal arrangement) (CIRAM A10 = PPU A10)
     // ||||||+-- 1: Cartridge contains battery-backed PRG RAM ($6000-7FFF) or other persistent memory
     // |||||+--- 1: 512-byte trainer at $7000-$71FF (stored before PRG data)
     // ||||+---- 1: Ignore mirroring control or above mirroring bit; instead provide four-screen VRAM
@@ -126,6 +133,7 @@ pub struct ROM {
     // 16 bytes
     pub header: Header,
     //pub trainer: [u8; 64],
+    pub mirroring: MirroringType,
     pub prg_rom: Vec<u8>,
     pub chr_rom: Vec<u8>,
 }
@@ -143,7 +151,13 @@ impl ROM {
         
         // TODO Trainer and other stuff
 
-        let mut data_start: usize = 16;
+        let mirroring = match utils::get_bit(&header.flags_6, 0) {
+            0u8 => MirroringType::Horizontal,
+            1u8 => MirroringType::Vertical,
+            _ => MirroringType::Vertical,
+        }; 
+
+        let data_start: usize = 16;
 
         let prg_rom_size_bytes = (header.prg_rom_size as u32) * 16 * KB;
         let chr_rom_size_bytes = (header.chr_rom_size as u32) * 8 * KB;
@@ -154,6 +168,7 @@ impl ROM {
 
         let rom = ROM {
             header: header,
+            mirroring: mirroring,
             prg_rom: raw_data[data_start..prg_rom_end].to_vec(), 
             chr_rom: raw_data[prg_rom_end..chr_rom_end].to_vec(),
         };
@@ -166,21 +181,28 @@ impl ROM {
         let fds_const = [0x46, 0x44, 0x53, 0x1a];
         let unif_const = [0x55, 0x4e, 0x49, 0x46];
 
-        if (nes_constant == fds_const) {
+        if nes_constant == fds_const {
             return Some(ROMType::FDS);
-        } else if (nes_constant == ines_const) {
+        } else if nes_constant == ines_const {
             return Some(ROMType::INES);
-        } else if (nes_constant == unif_const) {
+        } else if nes_constant == unif_const {
             return Some(ROMType::UNIF);
         }
         None
     }
 }
 
-impl fmt::Display for Header {
+impl fmt::Display for ROM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Header: {:?}, PRG ROM: {} KB, CHR ROM {} KB",
-               self.nes_constant, self.prg_rom_size, self.chr_rom_size)
+        let mirroring = match self.mirroring {
+            MirroringType::Horizontal => "Horizontal",
+            MirroringType::Vertical => "Vertical", 
+        };
+        let header = &self.header;
+        write!(f, "Header: {:?}, Mirroring type: {}, \
+               PRG ROM: {} KB, CHR ROM: {} KB",
+               header.nes_constant, mirroring, 
+               header.prg_rom_size, header.chr_rom_size)
     }
 } 
 
