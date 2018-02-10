@@ -1,10 +1,11 @@
 pub fn get_bit(byte: &u8, i: u8) -> u8 {
-    return (byte & 2u8.pow(i as u32)) >> i;
+    (byte >> i) & 1u8
 }
 
-pub fn set_bit(byte: &u8, i: u8, value: bool) {
+pub fn set_bit(byte: &mut u8, i: u8, value: bool) {
     match value {
-        true => byte |= 2u8::pow(i),
-        false => byte &= !2u8::pow(i),
+        true => *byte |= 1u8 << i, 
+        false => *byte &= !(1u8 << i), 
     } 
 }
+
