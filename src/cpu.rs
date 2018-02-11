@@ -1,7 +1,22 @@
 use rom;
 use utils;
 
-// Implementation of status register and stuff for it
+// 7  bit  0
+// ---- ----
+// NVss DIZC
+// |||| ||||
+// |||| |||+- Carry: 1 if last addition or shift resulted in a carry, or if
+// |||| |||     last subtraction resulted in no borrow
+// |||| ||+-- Zero: 1 if last operation resulted in a 0 value
+// |||| |+--- Interrupt: Interrupt inhibit
+// |||| |       (0: /IRQ and /NMI get through; 1: only /NMI gets through)
+// |||| +---- Decimal: 1 to make ADC and SBC use binary-coded decimal arithmetic
+// ||||         (ignored on second-source 6502 like that in the NES)
+// ||++------ s: No effect, used by the stack copy, see note below
+// |+-------- Overflow: 1 if last ADC or SBC resulted in signed overflow,
+// |            or D6 from last BIT
+// +--------- Negative: Set to bit 7 of the last operation
+
 enum Status {
     CarryFlag = 0,
     ZeroFlag = 1,
@@ -23,31 +38,31 @@ impl StatusRegister {
         }
     }
 
-    pub fn set_carry_flag(&self, value: bool) {
+    pub fn set_carry_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::CarryFlag, value);
     } 
 
-    pub fn set_zero_flag(&self, value: bool) {
+    pub fn set_zero_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::ZeroFlag, value);
     }
 
-    pub fn set_interrupt_flag(&self, value: bool) {
+    pub fn set_interrupt_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::InterruptFlag, value);
     }
 
-    pub fn set_decimal_flag(&self, value: bool) {
+    pub fn set_decimal_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::DecimalMode, value);
     }
 
-    pub fn set_breakpoint(&self, value: bool) {
+    pub fn set_breakpoint(&mut self, value: bool) {
         utils::set_bit(self.data, Status::Breakpoint, value);
     }
 
-    pub fn set_overflow_flag(&self, value: bool) {
+    pub fn set_overflow_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::OverflowFlag, value);
     }
 
-    pub fn set_negative_flag(&self, value: bool) {
+    pub fn set_negative_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::NegativeFlag, value);
     }
 }  
