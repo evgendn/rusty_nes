@@ -9,3 +9,11 @@ pub fn set_bit(byte: &mut u8, i: u8, value: bool) {
     } 
 }
 
+pub fn toggle_bit(byte: &mut u8, i: u8) {
+    *byte ^= 1u8 << i
+}
+
+pub fn clear_bit(byte: &mut u8, i: u8) {
+    set_bit(byte, i, false)
+}
+
