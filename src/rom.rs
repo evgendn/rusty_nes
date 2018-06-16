@@ -1,12 +1,11 @@
 use utils;
 
 use std::io;
+use std::io::Read;
 use std::convert::From;
-use std::error;
 use std::error::Error;
 use std::fmt;
 use std::fs::File;
-use std::io::Read;
 use std::path::Path;
 
 const KB: u32 = 1024;
@@ -27,7 +26,7 @@ impl fmt::Display for ROMReadError {
     }
 }
 
-impl error::Error for ROMReadError {
+impl Error for ROMReadError {
     fn description(&self) -> &str {
         match *self {
             ROMReadError::IoError(ref x) => x.description(),
@@ -43,7 +42,6 @@ impl From<io::Error> for ROMReadError {
     }
 }
 
-// ROM Type need for define file format(iNES file)
 enum ROMType {
     INES,
     UNIF,
