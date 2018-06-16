@@ -2,6 +2,12 @@ extern crate lazy_static;
 
 use std::collections::HashMap;
 
+pub struct OpCode {
+    pub label: Label,
+    pub mode: AddressingMode,
+    pub size: u8,
+}
+
 pub enum AddressingMode {
     Implicit,
     Accumulator,
@@ -75,12 +81,6 @@ pub enum Label {
     TXA,
     TXS,
     TYA,
-}
-
-pub struct OpCode {
-    pub label: Label,
-    pub mode: AddressingMode,
-    pub size: u8,
 }
 
 lazy_static! {
