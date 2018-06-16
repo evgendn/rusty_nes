@@ -38,6 +38,34 @@ impl StatusRegister {
         }
     }
 
+    pub fn get_carry_flag(&mut self) -> bool {
+        utils::get_bit(self.data, Status::CarryFlag)
+    }
+
+    pub fn get_zero_flag(&mut self) -> bool {
+        utils::get_bit(sefl.data, Status::ZeroFlag)
+    }
+
+    pub fn get_interrupt_flag(&mut self) -> bool {
+        utils::get_bit(sefl.data, Status::InterruptFlag)
+    }
+
+    pub fn get_decimal_flag(&mut self) -> bool {
+        utils::get_bit(sefl.data, Status::DecimalMode)
+    }
+
+    pub fn get_breakpoint(&mut self) -> bool {
+        utils::get_bit(sefl.data, Status::Breakpoint)
+    }
+
+    pub fn get_overflow_flag(&mut self) -> bool {
+        utils::get_bit(sefl.data, Status::OverflowFlag)
+    }
+
+    pub fn get_negative_flag(&mut self) -> bool {
+        utils::get_bit(sefl.data, Status::NegativeFlag)
+    }
+
     pub fn set_carry_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::CarryFlag, value);
     } 
