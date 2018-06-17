@@ -1,6 +1,8 @@
 use rom;
 use utils;
 
+use self::opcode::*;
+
 // 7  bit  0
 // ---- ----
 // NVss DIZC
@@ -125,6 +127,103 @@ impl CPU {
     pub fn reset(&self) {
         self.sp_reg -= 3; 
         self.p_reg.set_interrupt_flag(true);
+    }
+
+    pub fn execute(&self, address: u8) {
+        let opcodes = opcode::MAP;
+        let opcode = opcodes.get(address).unwrap();
+        let fetched_addressing_mode = fetch_addressing_mode(opcode);
+
+        match opcodes.get(byte) {
+
+        }
+    }
+
+    pub fn fetch_addressing_mode(&self, opcode: &OpCode) -> u16 {
+        match opcode.mode {
+            AddressingMode::Implicit => 0x0000,
+            AddressingMode::Accumulator => 0x0000,
+            AddressingMode::Immediate => fetch_immidiate(bus),
+            AddressingMode::ZeroPage => fetch_zero_page(bus: &Bus),
+            AddressingMode::ZeroPageX => fetch_zero_page_x(bus: &Bus),
+            AddressingMode::ZeroPageY => fetch_zero_page_y(bus: &Bus),
+            AddressingMode::Absolute => fetch_absolute(bus: &Bus),
+            AddressingMode::AbsoluteX => fetch_absolute_x(bus: &Bus), 
+            AddressingMode::AbsoluteY => fetch_absolute_y(bus: &Bus), 
+            AddressingMode::Relative => fetch_relative(bus: &Bus),
+            AddressingMode::Indirect => fetch_indirect(bus: &Bus),
+            AddressingMode::IndirectX => fetch_indirect_x(bus: &Bus),
+            AddressingMode::IndirectY => fetch_indirect_y(bus: &Bus),
+        } 
+    }
+
+    pub fn fetch_immidiate(&mut self, bus: &Bus) -> u8 {
+        let address = bus.ram.read_byte(self.pc_reg);
+        self.pc_reg += 1;
+        address
+    }
+
+    pub fn fetch_zero_page(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_byte(self.pc_reg);
+        self.pc_reg += 1;
+        address as u16
+    }
+
+    pub fn fetch_zero_page_x(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_byte(self.pc_reg);
+        self.pc_reg += 1;
+        (address as u16 + self.x_reg as u16) & 0xff as u16
+    }
+
+    pub fn fetch_zero_page_y(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_byte(self.pc_reg);
+        self.pc_reg += 1;
+        (address as u16 + self.y_reg as u16) & 0xff as u16
+    }
+
+    pub fn fetch_relative(&mut self, bus: &Bus) -> u8 {
+        let address = bus.ram.read_byte(self.pc_reg);
+        self.pc_reg += 1;
+        if address > 0x80 {
+            address + self.pc_reg
+        } else {
+            address + (0x100 - self.pc_reg)
+        }
+    }
+
+    pub fn fetch_absolute(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_word(self.pc_reg);
+        self.pc_reg += 2;
+        address & 0xffff
+    }
+
+    pub fn fetch_absolute_x(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_word(self.pc_reg);
+        self.pc_reg += 2;
+        (address + self.x_reg as u16) & 0xffff
+    }
+    
+    pub fn fetch_absolute_y(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_word(self.pc_reg);
+        self.pc_reg += 2;
+        (address + self.y_reg as u16) & 0xffff
+    }
+
+    pub fn fetch_indirect_x(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_byte(self.pc_reg);
+        let tmp = ((address + self.x_reg) & 0xff) as u16;
+        let result = bus.ram.read_word(tmp);
+        self.pc_reg += 1;
+
+        (bus.ram.read_word(result) + bus.ram.read_word(result + 1) * 0x100)
+    }
+
+    pub fn fetch_indirect_y(&mut self, bus: &Bus) -> u16 {
+        let address = bus.ram.read_word(self.pc_reg);
+        let base = ((bus.ram.read_word(address) + bus.ram.read_word(address + 1)) & 0x00ff) * 0x100;
+        self.pc_reg += 1;
+
+        (base as u16 + self.y_reg as u16) & 0xffff
     }
 }
 
