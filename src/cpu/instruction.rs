@@ -11,7 +11,7 @@ pub fn lda(opcode: u8, bus: &mut Bus) {
 // Arithmetic operations
 pub fn adc(opcode: u8, bus: &mut Bus) {
     let fetched = bus.read(opcode);
-    let result = bus.cpu.a_reg as u32 + fetched as u32;
+    let mut result = bus.cpu.a_reg as u32 + fetched as u32;
 
     if cpu.p_reg.get_carry_flag() {
         result += 1;

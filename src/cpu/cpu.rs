@@ -3,6 +3,22 @@ use utils;
 
 use self::opcode::*;
 
+ 
+
+pub struct CPU {
+    // Accumulator register
+    a_reg: u8,
+    // Index registers
+    x_reg: u8,
+    y_reg: u8,
+    // Processor status flag bits
+    p_reg: StatusRegister,
+    // Stack pointer
+    sp_reg: u8,
+    // Program counter
+    pc_reg: u16,
+}
+
 // 7  bit  0
 // ---- ----
 // NVss DIZC
@@ -28,6 +44,7 @@ enum Status {
     OverflowFlag = 6,
     NegativeFlag = 7,
 }
+
 struct StatusRegister {
     data: u8,
 }
@@ -95,21 +112,7 @@ impl StatusRegister {
     pub fn set_negative_flag(&mut self, value: bool) {
         utils::set_bit(self.data, Status::NegativeFlag, value);
     }
-}  
-
-pub struct CPU {
-    // Accumulator register
-    a_reg: u8,
-    // Index registers
-    x_reg: u8,
-    y_reg: u8,
-    // Processor status flag bits
-    p_reg: StatusRegister,
-    // Stack pointer
-    sp_reg: u8,
-    // Program counter
-    pc_reg: u16,
-}
+} 
 
 impl CPU {
     // Power up
@@ -117,7 +120,7 @@ impl CPU {
         CPU {
             a_reg: 0x0,
             x_reg: 0x0,
-            y_reg; 0x0,
+            y_reg: 0x0,
             p_reg: StatusRegister::new(),
             sp_reg: 0xfd,
             pc_reg: 0x0,
@@ -129,17 +132,15 @@ impl CPU {
         self.p_reg.set_interrupt_flag(true);
     }
 
-    pub fn execute(&self, address: u8) {
+    pub fn tick(&self) {
         let opcodes = opcode::MAP;
         let opcode = opcodes.get(address).unwrap();
-        let fetched_addressing_mode = fetch_addressing_mode(opcode);
-
-        match opcodes.get(byte) {
-
-        }
+        print!(opcode);
+        let fetched_address = chose_addressing_mode(opcode);
+        self.execute_instruction(fetched_address, opcode);
     }
 
-    pub fn fetch_addressing_mode(&self, opcode: &OpCode) -> u16 {
+    pub fn chose_addressing_mode(&self, opcode: &OpCode) -> u16 {
         match opcode.mode {
             AddressingMode::Implicit => 0x0000,
             AddressingMode::Accumulator => 0x0000,
@@ -224,6 +225,13 @@ impl CPU {
         self.pc_reg += 1;
 
         (base as u16 + self.y_reg as u16) & 0xffff
+    }
+
+    pub fn execute_instruction(address: u16, opcode: &Opcode) {
+        match opcode.lable {
+            ADC => adc(address),
+            LDA => lda(address),
+        }
     }
 }
 

@@ -17,7 +17,7 @@ impl RAM {
     pub fn read_word(&self, address: u16) -> u16 {
         let upper_byte = self.data.borrow()[(address + 1) as u16];
         let lower_byte = self.data.borrow()[(address) as u16];
-        (upper_byte << 8 | lower_byte) as u 16
+        (upper_byte << 8 | lower_byte) as u16
     }
     
     pub fn write(&self, address: u16, byte: u8) {
