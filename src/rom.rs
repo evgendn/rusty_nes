@@ -42,12 +42,14 @@ impl From<io::Error> for ROMReadError {
     }
 }
 
+#[derive(Debug)]
 enum ROMType {
     INES,
     UNIF,
     FDS,
 }
 
+#[derive(Debug)]
 pub enum MirroringType {
     Horizontal,
     Vertical,
@@ -127,6 +129,7 @@ impl Header {
     }
 }
 
+#[derive(Debug)]
 pub struct ROM {
     // 16 bytes
     pub header: Header,
