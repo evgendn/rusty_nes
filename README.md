@@ -3,4 +3,5 @@ This is an emulator for Nintendo Entertainment System written in the Rust progra
 
 Goals:
 * Learn the rust language
-* Learn how emulators works
+*Learn how emulators works
+
