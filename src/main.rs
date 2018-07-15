@@ -5,10 +5,8 @@ mod rom;
 mod utils;
 mod cpu;
 mod ram;
-mod nes;
 
 use rom::ROM;
-use nes::*;
 
 fn main() {
     let path = "/home/evgeniy/Development/rusty_nes/\
@@ -19,7 +17,9 @@ fn main() {
     };
     println!("{}", rom);
 
-    let nes = &mut NES::new(path);
-    println!("{:?}", nes.cpu);
+    let mut ram = ram::RAM::new();
+    ram.data[0] = 0x79;
+    ram.data[1] = 0xad;
+    let mut cpu = cpu::cpu::CPU::new(ram);
+    cpu.tick();
 }
-

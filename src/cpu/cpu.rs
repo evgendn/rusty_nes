@@ -118,15 +118,15 @@ impl StatusRegister {
 
 impl CPU {
     // Power up
-    pub fn new(ram: &mut ram::RAM) -> CPU {
+    pub fn new(ram: ram::RAM) -> CPU {
         CPU {
             a_reg: 0x0,
             x_reg: 0x0,
             y_reg: 0x0,
             p_reg: StatusRegister::new(),
             sp_reg: 0xfd,
-            pc_reg: 0x0,
-            ram: *ram,
+            pc_reg: 0x79,
+            ram: ram,
         }
     }
 
@@ -239,7 +239,7 @@ impl CPU {
         match opcode.label {
             Label::ADC => adc(self, address as u8),
             Label::LDA => lda(self, address as u8),
-            _ => println!("Other instructions")
+            _ => println!("Other instructions, {:?}", opcode)
         }
     }
 }
