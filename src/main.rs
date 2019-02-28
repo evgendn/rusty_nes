@@ -21,5 +21,5 @@ fn main() {
     ram.data[0] = 0x79;
     ram.data[1] = 0xad;
     let mut cpu = cpu::cpu::CPU::new(ram);
-    cpu.tick();
+    cpu.step();
 }
