@@ -135,12 +135,15 @@ impl CPU {
         self.p_reg.set_interrupt_flag(true);
     }
 
-    pub fn tick(&mut self) {
-        let opcodes= &MAP;
+    pub fn step(&mut self) {
+        let opcodes = &MAP;
+        // Fetching opcodes from programm counter register.
         let address = self.pc_reg as u8;
         let opcode = opcodes.get(&address).unwrap();
         println!("{:?}", opcode);
+
         let fetched_address = self.choose_addressing_mode(opcode) as u8;
+        // Decoding and executing instruction.
         self.execute_instruction(fetched_address, opcode);
     }
 
@@ -160,6 +163,14 @@ impl CPU {
             AddressingMode::IndirectY => self.fetch_indirect_y(),
             _ => 0x0
         } 
+    }
+
+    pub fn execute_instruction(&mut self, address: u8, opcode: &OpCode) {
+        match opcode.label {
+            Label::ADC => adc(self, address as u8),
+            Label::LDA => lda(self, address as u8),
+            _ => println!("Other instructions, {:?}", opcode)
+        }
     }
 
     pub fn fetching_accumulator(&mut self) -> u8 {
@@ -233,13 +244,5 @@ impl CPU {
         self.pc_reg += 1;
 
         (base as u16 + self.y_reg as u16) & 0xffff
-    }
-
-    pub fn execute_instruction(&mut self, address: u8, opcode: &OpCode) {
-        match opcode.label {
-            Label::ADC => adc(self, address as u8),
-            Label::LDA => lda(self, address as u8),
-            _ => println!("Other instructions, {:?}", opcode)
-        }
     }
 }
