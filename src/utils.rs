@@ -126,4 +126,3 @@ mod test {
         clear_bit(byte, 89u8);
     }
 }
-
