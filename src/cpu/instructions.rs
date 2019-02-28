@@ -71,3 +71,16 @@ pub fn adc(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_overflow_flag((accum ^ memory) & (accum ^ result as u8) & 0x80 != 0);
     cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
 }
+
+pub fn sbc(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let carry = 1u8 - cpu.p_reg.get_carry_flag();
+    let accum = cpu.a_reg;
+    cpu.a_reg = accum + memory + carry;
+    
+    let result = accum as u16 + memory as u16 + carry as u16;
+    cpu.p_reg.set_carry_flag(result > 0xff);
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_overflow_flag((accum ^ memory) & (accum ^ result as u8) & 0x80 != 0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
