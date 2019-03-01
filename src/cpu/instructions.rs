@@ -2,7 +2,7 @@
 use cpu::cpu;
 use utils::get_bit;
 
-// Load and Store operations
+// --------------- Load and Store operations ---------------
 pub fn lda(cpu: &mut cpu::CPU, address: u8)  {
     println!("LDA performed");
     let memory = cpu.ram.read_byte(address as u16);
@@ -58,7 +58,7 @@ pub fn sty(cpu: &mut cpu::CPU, address: u8) {
     cpu.y_reg = memory;
 }
 
-// Register Transfers
+// --------------- Register Transfers ---------------
 pub fn tax(cpu: &mut cpu::CPU, address: u8) {
     cpu.x_reg = cpu.a_reg;
     let x = cpu.x_reg;
@@ -91,7 +91,7 @@ pub fn tya(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_negative_flag(accum & 0x80 == 0x80);
 }
 
-// Arithmetic operations
+// --------------- Arithmetic operations ---------------
 pub fn adc(cpu: &mut cpu::CPU, address: u8) {
     println!("ADC performed");
     let memory = cpu.ram.read_byte(address as u16);
