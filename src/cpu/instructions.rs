@@ -266,3 +266,39 @@ pub fn dey(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_zero_flag(result == 0x0);
     cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
 }
+
+// --------------- Shifts ---------------
+pub fn asl(cpu: &mut cpu::CPU, address: u8) {
+    let old_accum = cpu.a_reg;
+    let memory = cpu.ram.read_byte(address as u16);
+    let result = memory * 0x2;
+    cpu.a_reg = result;
+
+    cpu.p_reg.set_carry_flag(old_accum & 0x80 == 0x80);
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn lsr(cpu: &mut cpu::CPU, address: u8) {
+    let old_accum = cpu.a_reg;
+    let memory = cpu.ram.read_byte(address as u16);
+    let result = memory / 0x2;
+    cpu.a_reg = result;
+
+    cpu.p_reg.set_carry_flag(old_accum & 0x80 == 0x80);
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn rol(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let accum = cpu.a_reg;
+    let mut result = accum * 0x2;
+    let old_carry = accum & 0x80 == 0x80;
+    result |= cpu.p_reg.get_carry_flag();
+    cpu.a_reg = result;
+
+    cpu.p_reg.set_carry_flag(old_carry);
+    cpu.p_reg.set_zero_flag(accum == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
