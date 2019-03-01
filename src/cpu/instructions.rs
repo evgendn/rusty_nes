@@ -291,10 +291,21 @@ pub fn lsr(cpu: &mut cpu::CPU, address: u8) {
 }
 
 pub fn rol(cpu: &mut cpu::CPU, address: u8) {
-    let memory = cpu.ram.read_byte(address as u16);
     let accum = cpu.a_reg;
     let mut result = accum * 0x2;
     let old_carry = accum & 0x80 == 0x80;
+    result |= cpu.p_reg.get_carry_flag();
+    cpu.a_reg = result;
+
+    cpu.p_reg.set_carry_flag(old_carry);
+    cpu.p_reg.set_zero_flag(accum == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn ror(cpu: &mut cpu::CPU, address: u8) {
+    let accum = cpu.a_reg;
+    let mut result = accum / 2u8;
+    let old_carry = accum & 0x1 == 0x1;
     result |= cpu.p_reg.get_carry_flag();
     cpu.a_reg = result;
 
