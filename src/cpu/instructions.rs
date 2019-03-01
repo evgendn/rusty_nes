@@ -126,6 +126,40 @@ pub fn plp(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.data = cpu.pull(); 
 }
 
+// --------------- Logical --------------- 
+pub fn and(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let accum = cpu.a_reg & memory; 
+    cpu.a_reg = accum;
+
+    cpu.p_reg.set_zero_flag(accum == 0x0);
+    cpu.p_reg.set_negative_flag(accum & 0x80 == 0x80);
+}
+
+pub fn eor(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let accum = cpu.a_reg ^ memory;
+    cpu.a_reg = accum;
+
+    cpu.p_reg.set_zero_flag(accum == 0x0);
+    cpu.p_reg.set_negative_flag(accum & 0x80 == 0x80);
+}
+
+pub fn nop(cpu: &mut cpu::CPU, address: u8) {
+    // Empty instruction. It's just increment program counter.
+}
+
+pub fn bit(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let accum = cpu.a_reg;
+    let m6 = memory & 0x40; 
+    let m7 = memory & 0x80;
+
+    cpu.p_reg.set_zero_flag(accum & memory == 0x0);
+    cpu.p_reg.set_overflow_flag(m6 == 0x40);
+    cpu.p_reg.set_negative_flag(m7 == 0x80);
+}
+
 // --------------- Arithmetic operations ---------------
 pub fn adc(cpu: &mut cpu::CPU, address: u8) {
     println!("ADC performed");
