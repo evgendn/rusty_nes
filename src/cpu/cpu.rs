@@ -48,7 +48,7 @@ enum Status {
 
 #[derive(Debug)]
 pub struct StatusRegister {
-    data: u8,
+    pub data: u8,
 }
 
 impl StatusRegister {
@@ -244,5 +244,17 @@ impl CPU {
         self.pc_reg += 1;
 
         (base as u16 + self.y_reg as u16) & 0xffff
+    }
+
+    // Stack starts with 0x100 untill 0x1FF.
+    pub fn push(&mut self, byte: u8) {
+        self.ram.write(0x100 | self.sp_reg as u16, byte);
+        self.sp_reg -= 1u8;
+    }
+
+    pub fn pull(&mut self) -> u8 {
+        self.sp_reg += 1u8;
+        let byte = self.ram.read_byte(0x100 | self.sp_reg as u16);
+        byte
     }
 }
