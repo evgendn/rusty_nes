@@ -146,7 +146,7 @@ pub fn eor(cpu: &mut cpu::CPU, address: u8) {
 }
 
 pub fn nop(cpu: &mut cpu::CPU, address: u8) {
-    // Empty instruction. It's just increment program counter.
+    // Empty instruction. This one just increment program counter.
 }
 
 pub fn bit(cpu: &mut cpu::CPU, address: u8) {
