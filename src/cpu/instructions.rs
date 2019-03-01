@@ -94,3 +94,23 @@ pub fn cpm(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_zero_flag(accum == memory);
     cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
 }
+
+pub fn cpx(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let x = cpu.x_reg;
+    let result = x - memory;
+
+    cpu.p_reg.set_carry_flag(x >= memory);
+    cpu.p_reg.set_zero_flag(x == memory);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn cpy(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let y = cpu.y_reg;
+    let result = y - memory;
+
+    cpu.p_reg.set_carry_flag(y >= memory);
+    cpu.p_reg.set_zero_flag(x == memory);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
