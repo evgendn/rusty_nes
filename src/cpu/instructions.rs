@@ -91,6 +91,41 @@ pub fn tya(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_negative_flag(accum & 0x80 == 0x80);
 }
 
+// --------------- Stack Operations ---------------
+pub fn tsx(cpu: &mut cpu::CPU, address: u8) {
+    cpu.x_reg = cpu.sp_reg;
+    let x = cpu.x_reg;
+
+    cpu.p_reg.set_zero_flag(x == 0x0);
+    cpu.p_reg.set_negative_flag(x & 0x80 == 0x80);
+}
+
+pub fn txs(cpu: &mut cpu::CPU, address: u8) {
+    cpu.sp_reg = cpu.x_reg;
+}
+
+pub fn pha(cpu: &mut cpu::CPU, address: u8) {
+    let accum = cpu.a_reg;
+    cpu.push(accum);
+}
+
+pub fn php(cpu: &mut cpu::CPU, address: u8) {
+    let status = cpu.p_reg.data;
+    cpu.push(status);
+}
+
+pub fn pla(cpu: &mut cpu::CPU, address: u8) {
+    cpu.a_reg = cpu.pull();
+    let accum = cpu.a_reg;
+
+    cpu.p_reg.set_zero_flag(accum == 0x0);
+    cpu.p_reg.set_negative_flag(accum & 0x80 == 0x80);
+}
+
+pub fn plp(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.data = cpu.pull(); 
+}
+
 // --------------- Arithmetic operations ---------------
 pub fn adc(cpu: &mut cpu::CPU, address: u8) {
     println!("ADC performed");
