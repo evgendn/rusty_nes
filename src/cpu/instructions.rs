@@ -84,3 +84,13 @@ pub fn sbc(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_overflow_flag((accum ^ memory) & (accum ^ result as u8) & 0x80 != 0);
     cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
 }
+
+pub fn cpm(cpu: &mut cpu::CPU, address: u8) {
+    let memory = cpu.ram.read_byte(address as u16);
+    let accum = cpu.a_reg;
+    let result = accum - memory;
+
+    cpu.p_reg.set_carry_flag(accum >= memory);
+    cpu.p_reg.set_zero_flag(accum == memory);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
