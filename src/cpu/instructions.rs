@@ -217,3 +217,52 @@ pub fn cpy(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_zero_flag(y == memory);
     cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
 }
+
+// --------------- Increments & Decrements ---------------
+pub fn inc(cpu: &mut cpu::CPU, address: u8) {
+    let result = cpu.ram.read_byte(address as u16) + 1u8;
+    cpu.ram.write(address as u16, result);
+
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn inx(cpu: &mut cpu::CPU, address: u8) {
+    let result = cpu.x_reg + 1u8;
+    cpu.x_reg = result;
+
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn iny(cpu: &mut cpu::CPU, address: u8) {
+    let result = cpu.y_reg + 1u8;
+    cpu.y_reg = result;
+
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn dec(cpu: &mut cpu::CPU, address: u8) {
+    let result = cpu.ram.read_byte(address as u16) - 1u8;
+    cpu.ram.write(address as u16, result);
+
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn dex(cpu: &mut cpu::CPU, address: u8) {
+    let result = cpu.x_reg - 1u8;
+    cpu.x_reg = result;
+
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
+
+pub fn dey(cpu: &mut cpu::CPU, address: u8) {
+    let result = cpu.y_reg - 1u8;
+    cpu.y_reg = result;
+
+    cpu.p_reg.set_zero_flag(result == 0x0);
+    cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
+}
