@@ -111,6 +111,6 @@ pub fn cpy(cpu: &mut cpu::CPU, address: u8) {
     let result = y - memory;
 
     cpu.p_reg.set_carry_flag(y >= memory);
-    cpu.p_reg.set_zero_flag(x == memory);
+    cpu.p_reg.set_zero_flag(y == memory);
     cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
 }
