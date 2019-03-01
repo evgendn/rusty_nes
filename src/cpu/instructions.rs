@@ -57,6 +57,40 @@ pub fn sty(cpu: &mut cpu::CPU, address: u8) {
     let memory = cpu.ram.read_byte(address as u16);
     cpu.y_reg = memory;
 }
+
+// Register Transfers
+pub fn tax(cpu: &mut cpu::CPU, address: u8) {
+    cpu.x_reg = cpu.a_reg;
+    let x = cpu.x_reg;
+
+    cpu.p_reg.set_zero_flag(x == 0x0);
+    cpu.p_reg.set_negative_flag(x & 0x80 == 0x80);
+}
+
+pub fn tay(cpu: &mut cpu::CPU, address: u8) {
+    cpu.y_reg = cpu.a_reg;
+    let y = cpu.y_reg;
+
+    cpu.p_reg.set_zero_flag(y == 0x0);
+    cpu.p_reg.set_negative_flag(y & 0x80 == 0x80);
+}
+
+pub fn txa(cpu: &mut cpu::CPU, address: u8) {
+    cpu.a_reg = cpu.x_reg;
+    let accum = cpu.a_reg;
+
+    cpu.p_reg.set_zero_flag(accum == 0x0);
+    cpu.p_reg.set_negative_flag(accum & 0x80 == 0x80);
+}
+
+pub fn tya(cpu: &mut cpu::CPU, address: u8) {
+    cpu.a_reg = cpu.y_reg;
+    let accum = cpu.a_reg;
+
+    cpu.p_reg.set_zero_flag(accum == 0x0);
+    cpu.p_reg.set_negative_flag(accum & 0x80 == 0x80);
+}
+
 // Arithmetic operations
 pub fn adc(cpu: &mut cpu::CPU, address: u8) {
     println!("ADC performed");
