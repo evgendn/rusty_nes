@@ -252,9 +252,21 @@ impl CPU {
         self.sp_reg -= 1u8;
     }
 
+    pub fn push_word(&mut self, word: u16) {
+        self.push(((word >> 0x8) & 0xff) as u8);
+        self.push((word & 0xff) as u8);
+    }
+
     pub fn pull(&mut self) -> u8 {
         self.sp_reg += 1u8;
         let byte = self.ram.read_byte(0x100 | self.sp_reg as u16);
         byte
+    }
+
+    pub fn pull_word(&mut self) -> u16 {
+        let low = self.pull() as u16;
+        let high = self.pull() as u16;
+        let word = high << 0x8 | low;
+        word
     }
 }
