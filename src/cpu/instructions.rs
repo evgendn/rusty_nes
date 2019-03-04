@@ -328,3 +328,32 @@ pub fn jsr(cpu: &mut cpu::CPU, address: u8) {
 pub fn rts(cpu: &mut cpu::CPU, address: u8) {
     cpu.pc_reg = (cpu.pull() - 0x1) as u16;
 }
+
+// --------------- Status Flag Changes ---------------
+pub fn clc(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.set_carry_flag(false);
+}
+
+pub fn cld(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.set_decimal_flag(false);
+}
+
+pub fn cli(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.set_interrupt_flag(false);
+}
+
+pub fn clv(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.set_overflow_flag(false);
+}
+
+pub fn sec(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.set_carry_flag(true);
+}
+
+pub fn sed(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.set_decimal_flag(true);
+}
+
+pub fn sei(cpu: &mut cpu::CPU, address: u8) {
+    cpu.p_reg.set_interrupt_flag(true);
+}
