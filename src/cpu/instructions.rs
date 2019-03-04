@@ -362,7 +362,7 @@ pub fn sei(cpu: &mut cpu::CPU, address: u8) {
 pub fn brk(cpu: &mut cpu::CPU, address: u8) {
     let pc = cpu.pc_reg;
     let p = cpu.p_reg.data;
-    cpu.push(pc as u8);
+    cpu.push_word(pc);
     cpu.push(p);
     cpu.pc_reg = 0xfffe;
     cpu.p_reg.set_breakpoint(true);
@@ -370,7 +370,5 @@ pub fn brk(cpu: &mut cpu::CPU, address: u8) {
 
 pub fn rti(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.data = cpu.pull();
-    let high = cpu.pull() as u16;
-    let low = cpu.pull() as u16;
-    cpu.pc_reg = high << 8 | low;
+    cpu.pc_reg = cpu.pull_word(); 
 }
