@@ -364,7 +364,7 @@ pub fn brk(cpu: &mut cpu::CPU, address: u8) {
     let p = cpu.p_reg.data;
     cpu.push_word(pc);
     cpu.push(p);
-    cpu.pc_reg = 0xfffe;
+    cpu.pc_reg = cpu.ram.read_word(0xfffe);
     cpu.p_reg.set_breakpoint(true);
 }
 
