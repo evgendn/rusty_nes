@@ -313,3 +313,18 @@ pub fn ror(cpu: &mut cpu::CPU, address: u8) {
     cpu.p_reg.set_zero_flag(accum == 0x0);
     cpu.p_reg.set_negative_flag(result & 0x80 == 0x80);
 }
+
+// --------------- Jumps & Calls ---------------
+pub fn jmp(cpu: &mut cpu::CPU, address: u8) {
+    cpu.pc_reg = address as u16; 
+}
+
+pub fn jsr(cpu: &mut cpu::CPU, address: u8) {
+    let result = address - 0x1;
+    cpu.push(result);
+    cpu.pc_reg = result as u16;
+}
+
+pub fn rts(cpu: &mut cpu::CPU, address: u8) {
+    cpu.pc_reg = (cpu.pull() - 0x1) as u16;
+}
